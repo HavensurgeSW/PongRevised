@@ -61,10 +61,7 @@ void main() {
         // Update
         //-----------------------------------------------------
         if (IsKeyPressed(KEY_SPACE)) pause = !pause;
-        if (IsKeyDown(KEY_W))players[0].rec.y -= 7;
-        if (IsKeyDown(KEY_S))players[0].rec.y += 7;
-        if (IsKeyDown(KEY_UP))players[1].rec.y -= 7;
-        if (IsKeyDown(KEY_DOWN))players[1].rec.y += 7;
+       
 
         if (!pause)
         {
@@ -72,14 +69,30 @@ void main() {
             ballPosition.y += ballSpeed.y;
 
             // Check walls collision for bouncing
-            if ((ballPosition.x >= (GetScreenWidth() - ballRadius)) || (ballPosition.x <= ballRadius)) ballPosition.x =(GetScreenWidth() / 2, GetScreenHeight() / 2);
+            if (ballPosition.x >= (GetScreenWidth() - ballRadius)) {
+                players[0].score++;
+                ballPosition.x = (GetScreenWidth() / 2, GetScreenHeight() / 2);
+            }
+
+            if (ballPosition.x <= (0 - ballRadius)) {
+                players[1].score++;
+                ballPosition.x = (GetScreenWidth() / 2, GetScreenHeight() / 2);
+            }
+
             if ((ballPosition.y >= (GetScreenHeight() - ballRadius)) || (ballPosition.y <= ballRadius)) ballSpeed.y *= -1.0f;
             if (CheckCollisionCircleRec(ballPosition, ballRadius, players[0].rec)) ballSpeed.x *= -1.0f;
             if (CheckCollisionCircleRec(ballPosition, ballRadius, players[1].rec)) ballSpeed.x *= -1.0f;
+            //player vs wall Collisions
             if (players[0].rec.y <= 0)players[0].rec.y = 0;
             if (players[0].rec.y >= GetScreenHeight()-players[0].paddleSize.y)players[0].rec.y = (GetScreenHeight() - players[0].paddleSize.y);
             if (players[1].rec.y <= 0)players[1].rec.y = 0;
             if (players[1].rec.y >= GetScreenHeight() - players[1].paddleSize.y)players[1].rec.y = (GetScreenHeight() - players[1].paddleSize.y);
+
+
+            if (IsKeyDown(KEY_W))players[0].rec.y -= 7;
+            if (IsKeyDown(KEY_S))players[0].rec.y += 7;
+            if (IsKeyDown(KEY_UP))players[1].rec.y -= 7;
+            if (IsKeyDown(KEY_DOWN))players[1].rec.y += 7;
         }
         else framesCounter++;
         //-----------------------------------------------------
@@ -90,17 +103,19 @@ void main() {
 
         ClearBackground(BLACK);
 
-        DrawCircleV(ballPosition, ballRadius, MAROON);
+        DrawCircleV(ballPosition, ballRadius, WHITE);
         DrawRectangleRec(players[0].rec, players[0].color);
         DrawRectangleRec(players[1].rec, players[1].color);
+        DrawText(FormatText("%i", players[0].score), (GetScreenWidth() / 2) - 60, 20, 40, RED);
+        DrawText(FormatText("%i", players[1].score), (GetScreenWidth() / 2) + 40, 20, 40, BLUE);
+        //DrawLine(GetScreenWidth() / 2, 0, GetScreenWidth() / 2, GetScreenHeight(), GRAY);
+        
 
-        DrawText("PRESS SPACE to PAUSE BALL MOVEMENT", 10, GetScreenHeight() - 25, 20, LIGHTGRAY);
+
+        DrawText("PRESS SPACE to PAUSE", GetScreenWidth()/2-120, GetScreenHeight() - 25, 20, LIGHTGRAY);
 
         // On pause, we draw a blinking message
         if (pause && ((framesCounter / 30) % 2)) DrawText("PAUSED", 350, 200, 30, GRAY);
-
-        DrawFPS(10, 10);
-
         EndDrawing();
         //-----------------------------------------------------
     }
