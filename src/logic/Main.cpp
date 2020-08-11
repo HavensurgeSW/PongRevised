@@ -11,7 +11,6 @@ struct Player {
 };
 
 Player players[2];
-
 void setPlayerParameters() {
     players[0].paddleSpeed = { GetFrameTime() * 150.0f,GetFrameTime() * 420.0f };
     players[0].paddleSize = { 10.0f, 85.0f };
@@ -48,7 +47,7 @@ void main() {
     setPlayerParameters();
     Vector2 ballPosition = { GetScreenWidth() / 2, GetScreenHeight() / 2 };
     Vector2 ballSpeed = { 5.0f, 4.0f };
-    int ballRadius = 12;
+    float ballRadius = 12.0f;
 
     bool pause = 0;
     int framesCounter = 0;
@@ -62,6 +61,10 @@ void main() {
         // Update
         //-----------------------------------------------------
         if (IsKeyPressed(KEY_SPACE)) pause = !pause;
+        if (IsKeyDown(KEY_W))players[0].rec.y -= 7;
+        if (IsKeyDown(KEY_S))players[0].rec.y += 7;
+        if (IsKeyDown(KEY_UP))players[1].rec.y -= 7;
+        if (IsKeyDown(KEY_DOWN))players[1].rec.y += 7;
 
         if (!pause)
         {
@@ -69,8 +72,14 @@ void main() {
             ballPosition.y += ballSpeed.y;
 
             // Check walls collision for bouncing
-            if ((ballPosition.x >= (GetScreenWidth() - ballRadius)) || (ballPosition.x <= ballRadius)) ballSpeed.x *= -1.0f;
+            if ((ballPosition.x >= (GetScreenWidth() - ballRadius)) || (ballPosition.x <= ballRadius)) ballPosition.x =(GetScreenWidth() / 2, GetScreenHeight() / 2);
             if ((ballPosition.y >= (GetScreenHeight() - ballRadius)) || (ballPosition.y <= ballRadius)) ballSpeed.y *= -1.0f;
+            if (CheckCollisionCircleRec(ballPosition, ballRadius, players[0].rec)) ballSpeed.x *= -1.0f;
+            if (CheckCollisionCircleRec(ballPosition, ballRadius, players[1].rec)) ballSpeed.x *= -1.0f;
+            if (players[0].rec.y <= 0)players[0].rec.y = 0;
+            if (players[0].rec.y >= GetScreenHeight()-players[0].paddleSize.y)players[0].rec.y = (GetScreenHeight() - players[0].paddleSize.y);
+            if (players[1].rec.y <= 0)players[1].rec.y = 0;
+            if (players[1].rec.y >= GetScreenHeight() - players[1].paddleSize.y)players[1].rec.y = (GetScreenHeight() - players[1].paddleSize.y);
         }
         else framesCounter++;
         //-----------------------------------------------------
@@ -79,7 +88,7 @@ void main() {
         //-----------------------------------------------------
         BeginDrawing();
 
-        ClearBackground(RAYWHITE);
+        ClearBackground(BLACK);
 
         DrawCircleV(ballPosition, ballRadius, MAROON);
         DrawRectangleRec(players[0].rec, players[0].color);
