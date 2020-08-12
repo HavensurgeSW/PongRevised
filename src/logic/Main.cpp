@@ -1,42 +1,4 @@
-#include "raylib.h"
-
-struct Player {
-    Rectangle rec;
-    int playerId;
-    Color color;
-    int score;
-    Vector2 paddleSpeed;
-    Vector2 paddleSize;
-    bool powerUp;
-};
-
-Player players[2];
-void setPlayerParameters() {
-    players[0].paddleSpeed = { GetFrameTime() * 150.0f,GetFrameTime() * 420.0f };
-    players[0].paddleSize = { 10.0f, 85.0f };
-    players[1].paddleSpeed = { GetFrameTime() * 150.0f,GetFrameTime() * 420.0f };
-    players[1].paddleSize = { 10.0f, 85.0f };
-    players[0].rec.width = players[0].paddleSize.x;
-    players[0].rec.height = players[0].paddleSize.y;
-    players[1].rec.width = players[1].paddleSize.x;
-    players[1].rec.height = players[1].paddleSize.y;
-    for (int i = 0; i < 2; i++)
-    {
-        players[i].score = 0;
-        players[i].playerId = i;
-    }
-    players[0].rec.x = (float)GetScreenWidth() / 20;
-    players[0].rec.y = (float)GetScreenHeight() / 2;
-    players[1].rec.x = (float)GetScreenWidth() - 40;
-    players[1].rec.y = (float)GetScreenHeight() / 2;
-
-    players[0].color = RED;
-    players[1].color = BLUE;
-
-    players[0].powerUp = false;
-    players[1].powerUp = false;
-
-}
+#include "HeaderMaster.h"
 
 void main() {
     const int screenWidth = 800;
@@ -47,7 +9,9 @@ void main() {
     setPlayerParameters();
     Vector2 ballPosition = { GetScreenWidth() / 2, GetScreenHeight() / 2 };
     Vector2 ballSpeed = { 5.0f, 4.0f };
+    bool ballStop = true;
     float ballRadius = 12.0f;
+    bool launchDirec = true;
 
     bool pause = 0;
     int framesCounter = 0;
@@ -65,20 +29,28 @@ void main() {
 
         if (!pause)
         {
-            ballPosition.x += ballSpeed.x;
-            ballPosition.y += ballSpeed.y;
+            if (ballStop == false) {
+                ballPosition.x += ballSpeed.x;
+                ballPosition.y += ballSpeed.y;
+            }
 
-            // Check walls collision for bouncing
+            //Scoring collisions
             if (ballPosition.x >= (GetScreenWidth() - ballRadius)) {
                 players[0].score++;
-                ballPosition.x = (GetScreenWidth() / 2, GetScreenHeight() / 2);
+                ballPosition.x = (GetScreenWidth() / 2);
+                ballPosition.y = (GetScreenHeight() / 2);
+                
+                ballStop = true;
+                launchDirec = true;
             }
-
             if (ballPosition.x <= (0 - ballRadius)) {
                 players[1].score++;
-                ballPosition.x = (GetScreenWidth() / 2, GetScreenHeight() / 2);
+                ballPosition.x = (GetScreenWidth() / 2);
+                ballPosition.y = (GetScreenHeight() / 2);
+                ballStop = true;
+                launchDirec = false;
             }
-
+            // Check walls collision for bouncing
             if ((ballPosition.y >= (GetScreenHeight() - ballRadius)) || (ballPosition.y <= ballRadius)) ballSpeed.y *= -1.0f;
             if (CheckCollisionCircleRec(ballPosition, ballRadius, players[0].rec)) ballSpeed.x *= -1.0f;
             if (CheckCollisionCircleRec(ballPosition, ballRadius, players[1].rec)) ballSpeed.x *= -1.0f;
@@ -93,6 +65,10 @@ void main() {
             if (IsKeyDown(KEY_S))players[0].rec.y += 7;
             if (IsKeyDown(KEY_UP))players[1].rec.y -= 7;
             if (IsKeyDown(KEY_DOWN))players[1].rec.y += 7;
+
+            if (ballStop) {
+                if (IsKeyDown(KEY_ENTER)) ballStop = false;
+            }
         }
         else framesCounter++;
         //-----------------------------------------------------
@@ -103,16 +79,25 @@ void main() {
 
         ClearBackground(BLACK);
 
+        DrawText(FormatText("%i", players[0].score), (GetScreenWidth() / 2) - 60, 20, 40, RED);
+        DrawText(FormatText("%i", players[1].score), (GetScreenWidth() / 2) + 40, 20, 40, BLUE);
+        DrawLine(GetScreenWidth() / 2, 0, GetScreenWidth() / 2, GetScreenHeight(), LIGHTGRAY);
+
+
+        if (ballStop) {
+            DrawText("PRESS ENTER to LAUNCH", GetScreenWidth() / 2 - 120, GetScreenHeight() - 25, 20, LIGHTGRAY);
+            if(!launchDirec)
+                DrawTriangleLines({ GetScreenWidth() / 2 - 60.0f, GetScreenHeight() / 2.0f }, { GetScreenWidth() / 2 - 30.0f, GetScreenHeight() / 2 + 15.0f }, { GetScreenWidth() / 2 - 30.0f, GetScreenHeight() / 2 - 15.0f }, RED);
+            if(launchDirec)
+                DrawTriangleLines({ GetScreenWidth() / 2 + 60.0f, GetScreenHeight() / 2.0f }, { GetScreenWidth() / 2 + 30.0f, GetScreenHeight() / 2 + 15.0f }, { GetScreenWidth() / 2 + 30.0f, GetScreenHeight() / 2 - 15.0f }, BLUE);
+        }
+
+        if(!ballStop)
+        DrawText("PRESS SPACE to PAUSE", GetScreenWidth()/2-120, GetScreenHeight() - 25, 20, LIGHTGRAY);
+
         DrawCircleV(ballPosition, ballRadius, WHITE);
         DrawRectangleRec(players[0].rec, players[0].color);
         DrawRectangleRec(players[1].rec, players[1].color);
-        DrawText(FormatText("%i", players[0].score), (GetScreenWidth() / 2) - 60, 20, 40, RED);
-        DrawText(FormatText("%i", players[1].score), (GetScreenWidth() / 2) + 40, 20, 40, BLUE);
-        //DrawLine(GetScreenWidth() / 2, 0, GetScreenWidth() / 2, GetScreenHeight(), GRAY);
-        
-
-
-        DrawText("PRESS SPACE to PAUSE", GetScreenWidth()/2-120, GetScreenHeight() - 25, 20, LIGHTGRAY);
 
         // On pause, we draw a blinking message
         if (pause && ((framesCounter / 30) % 2)) DrawText("PAUSED", 350, 200, 30, GRAY);

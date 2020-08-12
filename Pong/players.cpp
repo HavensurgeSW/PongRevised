@@ -1,10 +1,11 @@
-#include "Player.h"
+#pragma once
+#include "players.h"
 Player players[1];
 
 void setPlayerParameters() {
-	players[0].paddleSpeed = { GetFrameTime()*150.0f,GetFrameTime()*420.0f };
+	players[0].paddleSpeed = { GetFrameTime() * 150.0f,GetFrameTime() * 420.0f };
 	players[0].paddleSize = { 10.0f, 85.0f };
-	players[1].paddleSpeed = { GetFrameTime()*150.0f,GetFrameTime()*420.0f };
+	players[1].paddleSpeed = { GetFrameTime() * 150.0f,GetFrameTime() * 420.0f };
 	players[1].paddleSize = { 10.0f, 85.0f };
 	players[0].rec.width = players[0].paddleSize.x;
 	players[0].rec.height = players[0].paddleSize.y;
