@@ -11,7 +11,8 @@ enum class screenID {
     menu,
     game,
     finale,
-    pause
+    pause,
+	credits
 };
 screenID screenId;
 
@@ -38,34 +39,70 @@ void splashScreen(){
 			EndDrawing();
 		
 		if (((framesCounter / 300) % 5) == 1){
-			screenId = screenID::game;
+			screenId = screenID::menu;
 		}
 		
 	}
 }
 void menuScreen() {
-    
-    while (!WindowShouldClose()) { //PROBLEMA 2
+	bool menuBool = true;
+	bool controlsBool = false;
 
-        //Buttons
+	Rectangle playButton;
+	playButton.x = 20;
+	playButton.y = GetScreenHeight() / 2;
+	playButton.height = 30;
+	playButton.width = 65;
+	
+	Rectangle creditsButton;
+	creditsButton.x = 20;
+	creditsButton.y = (GetScreenHeight() / 2) + 100;
+	creditsButton.height = 30;
+	creditsButton.width = 113;
+	Rectangle closeButton;
+	closeButton.x = 20;
+	closeButton.y = (GetScreenHeight() / 2) + 150;
+	closeButton.height = 30;
+	closeButton.width = 81.25f;
 
-        Rectangle beginButton;
-        beginButton.x = GetScreenWidth() / 3;
-        beginButton.y = GetScreenHeight() - 80;
-        beginButton.width = 20;
-        beginButton.height = 20;
 
-        BeginDrawing();
-        ClearBackground(BLACK);
-        DrawText(FormatText("HSS Pong Revised"), GetScreenWidth() / 4.5, GetScreenHeight() / 10, 40, WHITE);
+	while (!WindowShouldClose()) {
+		BeginDrawing();
+		ClearBackground(BLACK);
 
-        if (CheckCollisionPointRec(GetMousePosition(), beginButton )) {
-            DrawText(FormatText("BEGIN"), GetScreenWidth() / 3, GetScreenHeight() - 80, 20, RED);
-        }
-        DrawText(FormatText("BEGIN"), GetScreenWidth() / 3, GetScreenHeight() - 80, 20, WHITE);
-        DrawText(FormatText("QUIT"), GetScreenWidth() / 2.7, GetScreenHeight() - 40, 20, WHITE);
-        EndDrawing();
-    }
+		if (CheckCollisionPointRec(GetMousePosition(), playButton))
+			DrawText(FormatText("Play"), 20, GetScreenHeight()/2, 30, RED);
+		else
+			DrawText(FormatText("Play"), 20, GetScreenHeight() / 2, 30, WHITE);
+
+		if (CheckCollisionPointRec(GetMousePosition(), creditsButton))
+			DrawText(FormatText("Credits"), 20, (GetScreenHeight() / 2) + 100, 30, RED);
+		else
+			DrawText(FormatText("Credits"), 20, (GetScreenHeight() / 2) + 100, 30, WHITE);
+
+		if (CheckCollisionPointRec(GetMousePosition(), closeButton))
+			DrawText(FormatText("Close"), 20, (GetScreenHeight() / 2) + 150, 30, RED);
+		else
+			DrawText(FormatText("Close"), 20, (GetScreenHeight() / 2) + 150, 30, WHITE);
+
+		
+
+		DrawText(FormatText("v 0.3"), GetScreenWidth() - 50, 1, 20, WHITE);
+
+		EndDrawing();
+
+		if (CheckCollisionPointRec(GetMousePosition(), playButton) && IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
+			screenId = screenID::game;
+		}
+	
+		if (CheckCollisionPointRec(GetMousePosition(), closeButton) && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+			exit(0);
+		}
+
+		if (CheckCollisionPointRec(GetMousePosition(), creditsButton) && IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
+			screenId = screenID::credits;
+		}
+	}
 }
 /////GAME LOOP//////
 void initGameObjects() {
@@ -172,8 +209,8 @@ void main() {
 		switch (screenId) {
 		case screenID::splash:
 			splashScreen();
-			screenId = screenID::game;
-			break;
+			screenId = screenID::menu;
+			
 		case screenID::menu:
 			menuScreen();
 			break;
@@ -181,7 +218,7 @@ void main() {
 			gameScreen();
 			break;
 		case screenID::finale:
-
+			break;
 		}
 	
 
