@@ -30,14 +30,11 @@ void splashScreen(){
 
 	while (screenId==screenID::splash)    // Detect window close button or ESC key
 	{
-		
 		framesCounter++;
-		
-
+	
 			BeginDrawing();
 			ClearBackground(BLACK);
 			DrawText("HAVENSURGE SOFTWORKS", GetScreenWidth()/4, GetScreenHeight()/2, GetScreenWidth()/24, WHITE);
-			
 			EndDrawing();
 		
 		if (((framesCounter / 300) % 5) == 1){
@@ -109,13 +106,23 @@ void collisions() {
 
 		ball.ballStop = true;
 		launchDirec = true;
+		//Win Con
+		if (players[0].score == 10) {
+			screenId = screenID::finale;
+		}
 	}
 	if (ball.ballPosition.x <= (0 - ball.ballRadius)) {
 		players[1].score++;
 		ball.ballPosition.x = (GetScreenWidth() / 2);
 		ball.ballPosition.y = (GetScreenHeight() / 2);
+
 		ball.ballStop = true;
 		launchDirec = false;
+
+		//WinCon
+		if (players[1].score == 10) {
+			screenId = screenID::finale;
+		}
 	}
 	// Check walls collision for bouncing
 	if ((ball.ballPosition.y >= (GetScreenHeight() - ball.ballRadius)) || (ball.ballPosition.y <= ball.ballRadius)) ball.ballSpeed.y *= -1.0f;
@@ -166,12 +173,15 @@ void main() {
 		case screenID::splash:
 			splashScreen();
 			screenId = screenID::game;
+			break;
 		case screenID::menu:
 			menuScreen();
 			break;
 		case screenID::game:
 			gameScreen();
 			break;
+		case screenID::finale:
+
 		}
 	
 
