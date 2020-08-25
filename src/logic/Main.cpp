@@ -7,6 +7,7 @@
 using namespace std;
 
 enum class screenID {
+	splash,
     menu,
     game,
     finale,
@@ -22,13 +23,29 @@ void initGame() {
     const int screenHeight = 450;
     InitWindow(screenWidth, screenHeight, "HSS - Pong (Revised)");
     SetTargetFPS(60);
-    screenId = screenID::menu;
+    screenId = screenID::splash;
 }
-void initGameObjects() {
-    setPlayerParameters(); 
-    setBallParameters();  
-}
+void splashScreen(){
+	int framesCounter = 0;
 
+	while (screenId==screenID::splash)    // Detect window close button or ESC key
+	{
+		
+		framesCounter++;
+		
+
+			BeginDrawing();
+			ClearBackground(BLACK);
+			DrawText("HAVENSURGE SOFTWORKS", GetScreenWidth()/4, GetScreenHeight()/2, GetScreenWidth()/24, WHITE);
+			
+			EndDrawing();
+		
+		if (((framesCounter / 300) % 5) == 1){
+			screenId = screenID::game;
+		}
+		
+	}
+}
 void menuScreen() {
     
     while (!WindowShouldClose()) { //PROBLEMA 2
@@ -54,6 +71,10 @@ void menuScreen() {
     }
 }
 /////GAME LOOP//////
+void initGameObjects() {
+    setPlayerParameters(); 
+    setBallParameters();  
+}
 void drawGame() {
     BeginDrawing();
 
@@ -62,6 +83,7 @@ void drawGame() {
     DrawCircleV(ball.ballPosition, 12.0f, WHITE);
     DrawText(FormatText("%i", players[0].score), (GetScreenWidth() / 2) - 60, 20, 40, RED);
     DrawText(FormatText("%i", players[1].score), (GetScreenWidth() / 2) + 40, 20, 40, BLUE);
+
     DrawLine(GetScreenWidth() / 2, 0, GetScreenWidth() / 2, GetScreenHeight(), LIGHTGRAY);
 
 
@@ -125,13 +147,10 @@ void update() {
 	}
 }
 void gameScreen() {
-
-	players[1].score = 0;
-    while (!WindowShouldClose()) 
-    {
-		players[1].score = 0;
-			
+	initGameObjects();
+    while (!WindowShouldClose()) {					
 			input();
+			update();
 			collisions();
             drawGame();
     }
@@ -142,17 +161,19 @@ void main() {
     
 
     initGame();
-    
-    screenId = screenID::game;
-    switch (screenId) {
-    case screenID::menu:
-        menuScreen();
-        break;
-    case screenID::game:
-        initGameObjects();
-        gameScreen();
-        break;
-    }
+	
+		switch (screenId) {
+		case screenID::splash:
+			splashScreen();
+			screenId = screenID::game;
+		case screenID::menu:
+			menuScreen();
+			break;
+		case screenID::game:
+			gameScreen();
+			break;
+		}
+	
 
     CloseWindow();        
   }
