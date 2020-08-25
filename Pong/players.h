@@ -1,5 +1,5 @@
 #pragma once
-#include "HeaderMaster.h"
+#include "raylib.h"
 struct Player {
     Rectangle rec;
     int playerId;
@@ -11,4 +11,6 @@ struct Player {
 };
 
 extern Player players[1];
+
 void setPlayerParameters();
+void playerMovement();
