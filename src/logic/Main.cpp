@@ -28,21 +28,24 @@ void initGame() {
 }
 void splashScreen(){
 	int framesCounter = 0;
+	float alpha = 1.0f;
 
 	while (screenId==screenID::splash)    // Detect window close button or ESC key
 	{
 		framesCounter++;
-	
+		
 			BeginDrawing();
 			ClearBackground(BLACK);
-			DrawText("HAVENSURGE SOFTWORKS", GetScreenWidth()/4, GetScreenHeight()/2, GetScreenWidth()/24, WHITE);
+			DrawText("SPLASHSCREEN TEST", GetScreenWidth()/4, GetScreenHeight()/2, GetScreenWidth()/24, WHITE);
+			
 			EndDrawing();
 		
-		if (((framesCounter / 300) % 5) == 1){
+		if (((framesCounter / 300) % 5) == 1){ //60 fps on 5 seconds
 			screenId = screenID::menu;
 		}
 		
 	}
+	
 }
 void menuScreen() {
 	bool menuBool = true;
@@ -66,7 +69,7 @@ void menuScreen() {
 	closeButton.width = 81.25f;
 
 
-	while (!WindowShouldClose()) {
+	while (!WindowShouldClose()&&screenId==screenID::menu) {
 		BeginDrawing();
 		ClearBackground(BLACK);
 
@@ -192,7 +195,7 @@ void update() {
 }
 void gameScreen() {
 	initGameObjects();
-    while (!WindowShouldClose()) {					
+    while (!WindowShouldClose()&&screenId==screenID::game) {					
 			input();
 			update();
 			collisions();
@@ -209,11 +212,10 @@ void main() {
 		switch (screenId) {
 		case screenID::splash:
 			splashScreen();
-			screenId = screenID::menu;
+			
 			
 		case screenID::menu:
 			menuScreen();
-			break;
 		case screenID::game:
 			gameScreen();
 			break;
