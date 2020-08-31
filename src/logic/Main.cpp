@@ -28,7 +28,7 @@ void initGame() {
 }
 void splashScreen(){
 	int framesCounter = 0;
-	float alpha = 1.0f;
+	
 
 	while (screenId==screenID::splash)    // Detect window close button or ESC key
 	{
@@ -36,11 +36,11 @@ void splashScreen(){
 		
 			BeginDrawing();
 			ClearBackground(BLACK);
-			DrawText("SPLASHSCREEN TEST", GetScreenWidth()/4, GetScreenHeight()/2, GetScreenWidth()/24, WHITE);
+			DrawText("SPLASHSCREEN TEST", GetScreenWidth()/4, GetScreenHeight()/2-40, GetScreenWidth()/24, WHITE);
 			
 			EndDrawing();
 		
-		if (((framesCounter / 300) % 5) == 1){ //60 fps on 5 seconds
+		if (((framesCounter / 240) % 4) == 1){ //60 fps on 5 seconds
 			screenId = screenID::menu;
 		}
 		
@@ -49,7 +49,7 @@ void splashScreen(){
 }
 void menuScreen() {
 	bool menuBool = true;
-	bool controlsBool = false;
+	bool creditsBool = false;
 
 	Rectangle playButton;
 	playButton.x = 20;
@@ -73,6 +73,8 @@ void menuScreen() {
 		BeginDrawing();
 		ClearBackground(BLACK);
 
+		DrawText(FormatText("PONG"), 20, GetScreenHeight() / 8, 120, WHITE);
+
 		if (CheckCollisionPointRec(GetMousePosition(), playButton))
 			DrawText(FormatText("Play"), 20, GetScreenHeight()/2, 30, RED);
 		else
@@ -88,9 +90,15 @@ void menuScreen() {
 		else
 			DrawText(FormatText("Close"), 20, (GetScreenHeight() / 2) + 150, 30, WHITE);
 
+		if (creditsBool) {
+			DrawText(FormatText("Engine: Raylib 3.0"), (GetScreenWidth() / 2 + 40), (GetScreenHeight() / 4)+20, 30, WHITE);
+			DrawText(FormatText("Created by:"), (GetScreenWidth() / 2 + 40), (GetScreenHeight() / 4) + 100, 30, WHITE);
+			DrawText(FormatText("Matias P. Karplus"), (GetScreenWidth() / 2 + 40), (GetScreenHeight() / 4) + 130, 30, WHITE);
+		}
+
 		
 
-		DrawText(FormatText("v 0.3"), GetScreenWidth() - 50, 1, 20, WHITE);
+		DrawText(FormatText("v 0.9"), GetScreenWidth() - 50, 1, 20, WHITE);
 
 		EndDrawing();
 
@@ -98,12 +106,13 @@ void menuScreen() {
 			screenId = screenID::game;
 		}
 	
-		if (CheckCollisionPointRec(GetMousePosition(), closeButton) && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
-			exit(0);
+
+		if (CheckCollisionPointRec(GetMousePosition(), creditsButton) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+			creditsBool = true;
 		}
 
-		if (CheckCollisionPointRec(GetMousePosition(), creditsButton) && IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
-			screenId = screenID::credits;
+		if (CheckCollisionPointRec(GetMousePosition(), closeButton) && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+			exit(0);
 		}
 	}
 }
@@ -204,22 +213,35 @@ void gameScreen() {
 
 }
 
+void pauseScreen() {
+	BeginDrawing();
+	ClearBackground(BLACK);
+	DrawText(FormatText("%i", players[0].score), (GetScreenWidth() / 2) - 60, 20, 40, RED);
+	DrawText(FormatText("%i", players[1].score), (GetScreenWidth() / 2) + 40, 20, 40, BLUE);
+	DrawRectangleLines(players[0].rec.x, players[0].rec.y, players[0].rec.width, players[0].rec.height, RED);
+	DrawRectangleLines(players[1].rec.x, players[1].rec.y, players[1].rec.width, players[1].rec.height, BLUE);
+	DrawCircleLines(ball.ballPosition.x, ball.ballPosition.y, ball.ballRadius, WHITE);
+
+	if (IsKeyPressed(KEY_ESCAPE)){
+	
+	}
+}
+
 void main() {
     
-
     initGame();
 	
 		switch (screenId) {
 		case screenID::splash:
 			splashScreen();
-			
-			
 		case screenID::menu:
 			menuScreen();
 		case screenID::game:
 			gameScreen();
-			break;
+		case screenID::pause:
+			pauseScreen();
 		case screenID::finale:
+
 			break;
 		}
 	
