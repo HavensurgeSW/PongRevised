@@ -137,6 +137,13 @@ void drawGame() {
         if (launchDirec)
             DrawTriangleLines({ GetScreenWidth() / 2 + 60.0f, GetScreenHeight() / 2.0f }, { GetScreenWidth() / 2 + 30.0f, GetScreenHeight() / 2 + 15.0f }, { GetScreenWidth() / 2 + 30.0f, GetScreenHeight() / 2 - 15.0f }, players[1].color);
     }
+	if (players[0].powerUp){
+		DrawLine(GetScreenWidth() / 2-20, 0, GetScreenWidth() / 2-20, GetScreenHeight(), players[0].color);
+	}
+
+	if (players[1].powerUp) {
+		DrawLine(GetScreenWidth() / 2 + 20, 0, GetScreenWidth() / 2+20, GetScreenHeight(), players[1].color);
+	}
 
     DrawRectangleRec(players[0].rec, players[0].color);
     DrawRectangleRec(players[1].rec, players[1].color);
@@ -152,6 +159,7 @@ void collisions() {
 
 		ball.ballStop = true;
 		launchDirec = true;
+		players[0].powerUp = true;
 		//Win Con
 		if (players[0].score == 10) {
 			screenId = screenID::menu;
@@ -164,6 +172,7 @@ void collisions() {
 
 		ball.ballStop = true;
 		launchDirec = false;
+		players[1].powerUp = true;
 
 		//WinCon
 		if (players[1].score == 10) {
@@ -223,12 +232,18 @@ void gameScreen() {
 			DrawRectangleLines(players[0].rec.x, players[0].rec.y, players[0].rec.width, players[0].rec.height, players[0].color);
 			DrawRectangleLines(players[1].rec.x, players[1].rec.y, players[1].rec.width, players[1].rec.height, players[1].color);
 			DrawCircleLines(ball.ballPosition.x, ball.ballPosition.y, ball.ballRadius, WHITE);
+			DrawLine(GetScreenWidth() / 2, 0, GetScreenWidth() / 2, GetScreenHeight(), LIGHTGRAY);
+
+			DrawText("PAUSED", GetScreenWidth()/3.0f+20, GetScreenHeight()/3.0f, 60, WHITE);
+			DrawText("RESUME [P]", GetScreenWidth() / 3.0f + 70, GetScreenHeight() / 3.0f+120, 30, WHITE);
+			DrawText("MENU [M]", GetScreenWidth() / 3.0f + 90, GetScreenHeight()-60.0f, 30, WHITE);
 
 
-			
 			if (IsKeyPressed(KEY_P)) {
 				pauseBool = false;
-
+			}
+			if (IsKeyPressed(KEY_M)) {
+				screenId = screenID::menu;
 			}
 			EndDrawing();
 		}
