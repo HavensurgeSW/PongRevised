@@ -8,8 +8,11 @@ void setPlayerParameters() {
 
 	cout << GetFrameTime() << endl;
 	players[0].paddleSpeed.y = 7;
+	players[0].paddleSpeed.x = 3;
+
 	players[0].paddleSize = { 10.0f, 85.0f };
 	players[1].paddleSpeed.y = 7;
+	players[1].paddleSpeed.x = 3;
 	players[1].paddleSize = { 10.0f, 85.0f };
 
 	players[0].rec.width = players[0].paddleSize.x;

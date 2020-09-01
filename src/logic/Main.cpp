@@ -190,6 +190,90 @@ void collisions() {
 	if (players[1].rec.y >= GetScreenHeight() - players[1].paddleSize.y)players[1].rec.y = (GetScreenHeight() - players[1].paddleSize.y);
 
 	}
+void timePU(int id) {
+	float timer = 0.0f;
+	Vector2 ballPosTemp = ball.ballPosition;
+	float ballSXTemp = ball.ballSpeed.x;
+	float ballSYTemp = ball.ballSpeed.y;
+	ball.ballSpeed.x = 0;
+	ball.ballSpeed.y = 0;
+
+	if (id == 0) {
+		bool warudoBool0 = true;
+		if (players[0].powerUp = true) {
+			do {
+
+
+				if (IsKeyDown(KEY_W)) players[0].rec.y -= players[0].paddleSpeed.y;
+				if (IsKeyDown(KEY_S)) players[0].rec.y += players[0].paddleSpeed.y;
+				if (IsKeyDown(KEY_A)) players[0].rec.x -= players[0].paddleSpeed.x;
+				if (IsKeyDown(KEY_D)) players[0].rec.x += players[0].paddleSpeed.x;
+				if (players[0].rec.y <= 0) {
+					players[0].rec.y = 1;
+				}
+				if (players[0].rec.y >= GetScreenHeight() - players[0].paddleSize.y) {
+					players[0].rec.y = GetScreenHeight() - players[0].paddleSize.y - 0.1f;
+				}
+
+				if (players[0].rec.x <= 0) {
+					players[0].rec.x = 1;
+				}
+				if (players[0].rec.x >= GetScreenWidth() / 2 - 20) {
+					players[0].rec.x = GetScreenWidth() / 2 - 21;
+				}
+
+				drawGame();
+				timer += GetFrameTime();
+				if (timer >= 2.5f) {
+					warudoBool0 = false;
+				}
+
+
+			} while (warudoBool0);
+			players[0].powerUp = false;
+		}
+	}
+	if (id == 1) {
+		bool warudoBool1 = true;
+		if (players[1].powerUp = true) {
+			do {
+
+
+				if (IsKeyDown(KEY_UP)) players[1].rec.y -= players[1].paddleSpeed.y;
+				if (IsKeyDown(KEY_DOWN)) players[1].rec.y += players[1].paddleSpeed.y;
+				if (IsKeyDown(KEY_LEFT)) players[1].rec.x -= players[1].paddleSpeed.x;
+				if (IsKeyDown(KEY_RIGHT)) players[1].rec.x += players[1].paddleSpeed.x;
+				if (players[1].rec.y <= 0) {
+					players[1].rec.y = 1;
+				}
+				if (players[1].rec.y >= GetScreenHeight() - players[1].paddleSize.y) {
+					players[1].rec.y = GetScreenHeight() - players[1].paddleSize.y - 0.1f;
+				}
+
+				if (players[1].rec.x <= 0) {
+					players[1].rec.x = 1;
+				}
+				if (players[1].rec.x <= GetScreenWidth() / 2 + 20) {
+					players[1].rec.x = GetScreenWidth() / 2 + 21;
+				}
+
+				drawGame();
+				timer += GetFrameTime();
+				if (timer >= 2.5f) {
+					warudoBool1 = false;
+				}
+
+
+			} while (warudoBool1);
+			players[1].powerUp = false;
+		}
+	}
+
+
+	ball.ballPosition = ballPosTemp;
+	ball.ballSpeed.x = ballSXTemp;
+	ball.ballSpeed.y = ballSYTemp;
+}
 void input() {
 	//MOVEMENT
 	if (IsKeyDown(KEY_W))players[0].rec.y -= players[0].paddleSpeed.y;
@@ -201,6 +285,15 @@ void input() {
 		if (IsKeyPressed(KEY_ENTER)) ball.ballStop = false;
 	}
 
+	if (IsKeyPressed(KEY_G)&&players[0].powerUp) {
+		timePU(0);
+		
+	}
+	if (IsKeyPressed(KEY_L) && players[1].powerUp) {
+		timePU(1);
+		
+	}
+
 }
 void update() {
 	if (!ball.ballStop) {
@@ -208,6 +301,8 @@ void update() {
 		ball.ballPosition.x += ball.ballSpeed.x;
 	}
 }
+
+
 void gameScreen() {
 	initGameObjects();
 	
