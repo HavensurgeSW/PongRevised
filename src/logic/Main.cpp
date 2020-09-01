@@ -224,10 +224,13 @@ void gameScreen() {
 			DrawRectangleLines(players[1].rec.x, players[1].rec.y, players[1].rec.width, players[1].rec.height, players[1].color);
 			DrawCircleLines(ball.ballPosition.x, ball.ballPosition.y, ball.ballRadius, WHITE);
 
+
+			
 			if (IsKeyPressed(KEY_P)) {
 				pauseBool = false;
 
 			}
+			EndDrawing();
 		}
 
     }
