@@ -1,8 +1,8 @@
 #pragma once
 
 #include "raylib.h"
-#include "players.h"
-#include "Ball.h"
+#include "../objects/players.h"
+#include "../objects/Ball.h"
 #include <iostream>
 using namespace std;
 
@@ -16,7 +16,7 @@ enum class screenID {
 };
 screenID screenId;
 
-bool launchDirec = false;
+bool launchDirec;
 
 
 void initGame() {
@@ -67,6 +67,7 @@ void menuScreen() {
 	closeButton.y = (GetScreenHeight() / 2) + 150;
 	closeButton.height = 30;
 	closeButton.width = 81.25f;
+	
 
 
 	while (!WindowShouldClose()&&screenId==screenID::menu) {
@@ -116,7 +117,8 @@ void menuScreen() {
 /////GAME LOOP//////
 void initGameObjects() {
     setPlayerParameters(); 
-    setBallParameters();  
+    setBallParameters(); 
+	launchDirec = false;
 }
 void drawGame() {
     BeginDrawing();
@@ -124,19 +126,17 @@ void drawGame() {
     ClearBackground(BLACK);
 
     DrawLine(GetScreenWidth() / 2, 0, GetScreenWidth() / 2, GetScreenHeight(), LIGHTGRAY);
-    DrawCircleV(ball.ballPosition, 12.0f, WHITE);
+    DrawCircleV(ball.ballPosition, ball.ballRadius, WHITE);
     DrawText(FormatText("%i", players[0].score), (GetScreenWidth() / 2) - 60, 20, 40, players[0].color);
     DrawText(FormatText("%i", players[1].score), (GetScreenWidth() / 2) + 40, 20, 40, players[1].color);
 
-
-
-   /* if (ball.ballStop) {
+    if (ball.ballStop) {
         DrawText("PRESS ENTER to LAUNCH", GetScreenWidth() / 2 - 120, GetScreenHeight() - 25, 20, LIGHTGRAY);
         if (!launchDirec)
             DrawTriangleLines({ GetScreenWidth() / 2 - 60.0f, GetScreenHeight() / 2.0f }, { GetScreenWidth() / 2 - 30.0f, GetScreenHeight() / 2 + 15.0f }, { GetScreenWidth() / 2 - 30.0f, GetScreenHeight() / 2 - 15.0f }, players[0].color);
         if (launchDirec)
-            DrawTriangleLines({ GetScreenWidth() / 2 + 60.0f, GetScreenHeight() / 2.0f }, { GetScreenWidth() / 2 + 30.0f, GetScreenHeight() / 2 + 15.0f }, { GetScreenWidth() / 2 + 30.0f, GetScreenHeight() / 2 - 15.0f }, players[2].color);
-    }*/
+            DrawTriangleLines({ GetScreenWidth() / 2 + 60.0f, GetScreenHeight() / 2.0f }, { GetScreenWidth() / 2 + 30.0f, GetScreenHeight() / 2 + 15.0f }, { GetScreenWidth() / 2 + 30.0f, GetScreenHeight() / 2 - 15.0f }, players[1].color);
+    }
 
     DrawRectangleRec(players[0].rec, players[0].color);
     DrawRectangleRec(players[1].rec, players[1].color);
@@ -154,7 +154,7 @@ void collisions() {
 		launchDirec = true;
 		//Win Con
 		if (players[0].score == 10) {
-			screenId = screenID::finale;
+			screenId = screenID::menu;
 		}
 	}
 	if (ball.ballPosition.x <= (0 - ball.ballRadius)) {
@@ -167,7 +167,7 @@ void collisions() {
 
 		//WinCon
 		if (players[1].score == 10) {
-			screenId = screenID::finale;
+			screenId = screenID::menu;
 		}
 	}
 	// Check walls collision for bouncing
@@ -188,22 +188,20 @@ void input() {
 	if (IsKeyDown(KEY_UP))players[1].rec.y -= players[1].paddleSpeed.y;
 	if (IsKeyDown(KEY_DOWN))players[1].rec.y += players[1].paddleSpeed.y;
 
-	/*if (ball.ballStop) {
+	if (ball.ballStop) {
 		if (IsKeyPressed(KEY_ENTER)) ball.ballStop = false;
-	}*/
+	}
 
 }
 void update() {
-	
-		ball.ballPosition.y += 4.0f;
-		ball.ballPosition.x += 5.0f;
-	
+	if (!ball.ballStop) {
+		ball.ballPosition.y += ball.ballSpeed.y;
+		ball.ballPosition.x += ball.ballSpeed.x;
+	}
 }
 void gameScreen() {
 	initGameObjects();
-	players[0].score = 0;
-	players[1].score = 0;
-
+	
 	bool pauseBool = false;
     while (!WindowShouldClose()&&screenId==screenID::game) {					
 			
@@ -251,7 +249,7 @@ void main() {
 			gameScreen();
 		case screenID::finale:
 
-			break;
+			menuScreen();
 		}
 	}
 	

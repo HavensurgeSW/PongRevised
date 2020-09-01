@@ -18,6 +18,17 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\logic\Collisions.cpp" />
+    <ClCompile Include="..\src\logic\Main.cpp" />
+    <ClCompile Include="..\src\objects\Ball.cpp" />
+    <ClCompile Include="..\src\objects\players.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\logic\Collisions.h" />
+    <ClInclude Include="..\src\objects\Ball.h" />
+    <ClInclude Include="..\src\objects\players.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{65548780-60F1-49EF-AD6A-5903C950B80C}</ProjectGuid>
@@ -149,17 +160,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\src\logic\Main.cpp" />
-    <ClCompile Include="Ball.cpp" />
-    <ClCompile Include="Collisions.cpp" />
-    <ClCompile Include="players.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Ball.h" />
-    <ClInclude Include="Collisions.h" />
-    <ClInclude Include="players.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
