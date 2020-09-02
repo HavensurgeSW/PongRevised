@@ -16,9 +16,12 @@ enum class screenID {
 };
 screenID screenId;
 
+
+
 bool launchDirec;
 bool gamemode = true;
 int randomPU = 0;
+
 
 
 void initGame() {
@@ -307,6 +310,13 @@ void drawGame() {
         if (launchDirec)
             DrawTriangleLines({ GetScreenWidth() / 2 + 60.0f, GetScreenHeight() / 2.0f }, { GetScreenWidth() / 2 + 30.0f, GetScreenHeight() / 2 + 15.0f }, { GetScreenWidth() / 2 + 30.0f, GetScreenHeight() / 2 - 15.0f }, players[1].color);
     }
+
+	if (players[0].shield){
+		DrawRectangleRec(players[0].shields, players[0].color);
+	}
+	if (players[1].shield) {
+		DrawRectangleRec(players[1].shields, players[1].color);
+	}
 	//MULTIBALL
 	if (multiball.active){
 		DrawCircleV(multiball.ballPosition, multiball.ballRadius, PINK);
@@ -342,21 +352,7 @@ void collisions() {
 		launchDirec = true;
 		players[0].powerUp = true;
 		randomPU = 0;
-		/*players[1].adv = true;
-
-		if (players[0].adv = true) {
-			switch (GetRandomValue(1, 2)) {
-			case 1:
-				players[1].paddleSpeed.x += 2;
-				players[1].paddleSpeed.y += 2;
-				players[1].adv = false;
-				cout << "Speed increase" << endl;
-			case 2:
-				players[1].paddleSize.y = 110.5f;
-				players[1].adv = false;
-				cout << "Size increase" << endl;
-			}
-		}*/
+		players[1].shield = true;
 		
 	}
 	if (multiball.ballPosition.x <= (0 - multiball.ballRadius)) {
@@ -374,7 +370,7 @@ void collisions() {
 		ball.ballStop = true;
 		launchDirec = false;
 		players[1].powerUp = true;
-		players[0].adv = true;
+		players[0].shield = true;
 		randomPU = 0;
 
 		
@@ -387,25 +383,36 @@ void collisions() {
 	// Ball v Paddles
 	if (CheckCollisionCircleRec(ball.ballPosition, ball.ballRadius, players[0].rec)) {
 		ball.ballSpeed.x *= -1.0f;
+	
 		if(players[0].rec.x != GetScreenWidth()/20) players[0].rec.x = GetScreenWidth() / 20;
 		randomPU++;
 	}
 
-	if (CheckCollisionCircleRec(multiball.ballPosition, ball.ballRadius, players[0].rec)&&multiball.active) {
+	if (CheckCollisionCircleRec(ball.ballPosition, ball.ballRadius, players[0].shields) && players[0].shield) {
+		ball.ballSpeed.x *= -1.0f;
+		players[0].shield = false;
+	}
+
+	if (CheckCollisionCircleRec(multiball.ballPosition, ball.ballRadius, players[0].rec)) {
 		multiball.ballSpeed.x *= -1.0f;
 		cout << "collide!" << endl;
 		if (players[0].rec.x != GetScreenWidth() / 20) players[0].rec.x = GetScreenWidth() / 20;
 	}
 
 
+	if (CheckCollisionCircleRec(ball.ballPosition, ball.ballRadius, players[1].shields)&&players[1].shield) {
+		ball.ballSpeed.x *= -1.0f;
+		players[1].shield = false;
+	}
 	if (CheckCollisionCircleRec(ball.ballPosition, ball.ballRadius, players[1].rec)){
 		ball.ballSpeed.x *= -1.0f;
+		
 		if (players[1].rec.x != GetScreenWidth() - 40) {
 			players[1].rec.x = GetScreenWidth() - 40;
 		}
 		randomPU++;
 	}
-	if (CheckCollisionCircleRec(multiball.ballPosition, ball.ballRadius, players[0].rec)&&multiball.active) {
+	if (CheckCollisionCircleRec(multiball.ballPosition, ball.ballRadius, players[0].rec)) {
 		cout << multiball.ballSpeed.x << endl;
 		multiball.ballSpeed.x *= -1.0f;
 		cout << "collide!" << endl;
@@ -533,11 +540,13 @@ void input() {
 	}
 
 }
-void hazards(int random) {
-	switch (random){
+void hazards() {
+	switch (GetRandomValue(1,1)){
 	case 1:
 		multiball.active = true;
+		cout << multiball.ballSpeed.x << endl;
 		break;
+
 	}
 }
 void update() {
@@ -551,7 +560,7 @@ void update() {
 	}
 
 	if (randomPU>=6){
-		hazards(1);
+		hazards();
 		randomPU = 0;
 	}
 

@@ -33,6 +33,19 @@ void setPlayerParameters() {
 	players[0].adv = false;
 	players[1].adv = false;
 
+
+	players[0].shield = false;
+	players[0].shields.height = GetScreenHeight();
+	players[0].shields.width = 5;
+	players[0].shields.x = 0;
+	players[0].shields.y = 0;
+
+	players[1].shield = false;
+	players[1].shields.height = GetScreenHeight();
+	players[1].shields.width = 5;
+	players[1].shields.x = GetScreenWidth()-5;
+	players[1].shields.y = 0;
+
 }
 void playerMovement() {
 	if (IsKeyDown(KEY_W))players[0].rec.y -= 7;

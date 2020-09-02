@@ -9,9 +9,12 @@ struct Player {
     Vector2 paddleSize;
     bool powerUp;
 	bool adv;
+	bool shield;
+	Rectangle shields;
 };
 
 extern Player players[1];
+
 
 void setPlayerParameters();
 void playerMovement();
