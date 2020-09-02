@@ -10,7 +10,7 @@ enum class screenID {
 	splash,
     menu,
     game,
-    finale,
+	options,
     pause,
 	credits
 };
@@ -56,6 +56,11 @@ void menuScreen() {
 	playButton.y = GetScreenHeight() / 2;
 	playButton.height = 30;
 	playButton.width = 65;
+	Rectangle optionsButton;
+	optionsButton.x = 20;
+	optionsButton.y = (GetScreenHeight() / 2) + 50;
+	optionsButton.height = 30;
+	optionsButton.width = 113;
 	
 	Rectangle creditsButton;
 	creditsButton.x = 20;
@@ -81,6 +86,11 @@ void menuScreen() {
 		else
 			DrawText(FormatText("Play"), 20, GetScreenHeight() / 2, 30, WHITE);
 
+		if (CheckCollisionPointRec(GetMousePosition(), optionsButton))
+			DrawText(FormatText("Options"), 20, (GetScreenHeight() / 2) + 50, 30, RED);
+		else
+			DrawText(FormatText("Options"), 20, (GetScreenHeight() / 2) + 50, 30, WHITE);
+
 		if (CheckCollisionPointRec(GetMousePosition(), creditsButton))
 			DrawText(FormatText("Credits"), 20, (GetScreenHeight() / 2) + 100, 30, RED);
 		else
@@ -99,6 +109,10 @@ void menuScreen() {
 		if (CheckCollisionPointRec(GetMousePosition(), playButton) && IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
 			screenId = screenID::game;
 		}
+
+		if (CheckCollisionPointRec(GetMousePosition(), optionsButton) && IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
+			screenId = screenID::options;
+		}
 	
 
 		if (CheckCollisionPointRec(GetMousePosition(), creditsButton)) {
@@ -114,6 +128,34 @@ void menuScreen() {
 		EndDrawing();
 	}
 }
+void optionsScreen() {
+	Rectangle backButton;
+	backButton.x = 20;
+	backButton.y = 20;
+	backButton.height = 30;
+	backButton.width = 65;
+
+
+	while (!WindowShouldClose() && screenId == screenID::options){
+
+		DrawText(FormatText("GAMEMODE"), 20, GetScreenHeight() / 4, 30, WHITE);
+
+		BeginDrawing();
+		ClearBackground(BLACK);
+		if (CheckCollisionPointRec(GetMousePosition(), backButton))
+			DrawText(FormatText("Back"), 20, 20, 30, RED);
+		else
+			DrawText(FormatText("Back"), 20, 20, 30, WHITE);
+
+
+
+		EndDrawing();
+
+		if (CheckCollisionPointRec(GetMousePosition(), backButton) && IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
+			screenId = screenID::menu;
+		}
+	}
+}
 /////GAME LOOP//////
 void initGameObjects() {
     setPlayerParameters(); 
@@ -126,9 +168,9 @@ void drawGame() {
     ClearBackground(BLACK);
 
     DrawLine(GetScreenWidth() / 2, 0, GetScreenWidth() / 2, GetScreenHeight(), LIGHTGRAY);
-    DrawCircleV(ball.ballPosition, ball.ballRadius, WHITE);
     DrawText(FormatText("%i", players[0].score), (GetScreenWidth() / 2) - 60, 20, 40, players[0].color);
     DrawText(FormatText("%i", players[1].score), (GetScreenWidth() / 2) + 40, 20, 40, players[1].color);
+    DrawCircleV(ball.ballPosition, ball.ballRadius, WHITE);
 
     if (ball.ballStop) {
         DrawText("PRESS ENTER to LAUNCH", GetScreenWidth() / 2 - 120, GetScreenHeight() - 25, 20, LIGHTGRAY);
@@ -367,7 +409,8 @@ void main() {
 			menuScreen();
 		case screenID::game:
 			gameScreen();
-		case screenID::finale:
+		case screenID::options:
+			optionsScreen();
 
 			menuScreen();
 		}
