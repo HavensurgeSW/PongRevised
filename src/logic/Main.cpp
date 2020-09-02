@@ -11,12 +11,14 @@ enum class screenID {
     menu,
     game,
 	options,
+
     pause,
 	credits
 };
 screenID screenId;
 
 bool launchDirec;
+bool gamemode = true;
 
 
 void initGame() {
@@ -116,6 +118,26 @@ void menuScreen() {
 		DrawText(FormatText("v 0.9"), GetScreenWidth() - 50, 1, 20, WHITE);
 
 
+		if (CheckCollisionPointRec(GetMousePosition(), playButton)) {
+			DrawText(FormatText("GAME DETAILS"), (GetScreenWidth() / 2 + 40), (GetScreenHeight() / 4) + 20, 30, WHITE);
+			DrawText(FormatText("Gamemode: "), (GetScreenWidth() / 2 + 40), (GetScreenHeight() / 4) + 60, 20, WHITE);
+			if (gamemode){
+				DrawText(FormatText("PvP"), (GetScreenWidth() / 2 + 150), (GetScreenHeight() / 4) + 60, 20, WHITE);
+			}
+			else {
+				DrawText(FormatText("PvAI"), (GetScreenWidth() / 2 + 150), (GetScreenHeight() / 4) + 60, 20, WHITE);
+			}
+
+			DrawText(FormatText("Player 1"), (GetScreenWidth() / 2 + 40), (GetScreenHeight() / 4) + 100, 20, players[0].color);
+			DrawText(FormatText("[W/S] [G]"), (GetScreenWidth() / 2 + 130), (GetScreenHeight() / 4) + 100, 20, players[0].color);
+			DrawText(FormatText("Player 1"), (GetScreenWidth() / 2 + 40), (GetScreenHeight() / 4) + 140, 20, players[1].color);
+			DrawText(FormatText("[UP/DOWN] [L]"), (GetScreenWidth() / 2 + 130), (GetScreenHeight() / 4) + 140, 20, players[1].color);
+
+			DrawText(FormatText("[P]ause"), (GetScreenWidth() / 2 + 40), (GetScreenHeight() / 4) + 180, 20, WHITE);
+
+
+		}
+
 		if (CheckCollisionPointRec(GetMousePosition(), playButton) && IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
 			screenId = screenID::game;
 		}
@@ -198,6 +220,15 @@ void optionsScreen() {
 		//--------------------
 
 		EndDrawing();
+
+
+		if (CheckCollisionPointRec(GetMousePosition(), PvPButton) && IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
+			gamemode = true;
+		}
+		if (CheckCollisionPointRec(GetMousePosition(), PvAIButton) && IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
+			gamemode = false;
+		}
+
 
 		if (CheckCollisionPointRec(GetMousePosition(), backButton) && IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
 			screenId = screenID::menu;
@@ -452,6 +483,7 @@ void update() {
 
 void gameScreen() {
 
+	initGameObjects();
 	
 	bool pauseBool = false;
     while (!WindowShouldClose()&&screenId==screenID::game) {					
@@ -508,8 +540,6 @@ void main() {
 			gameScreen();
 		case screenID::options:
 			optionsScreen();
-
-			menuScreen();
 		}
 	}
 	
