@@ -383,7 +383,6 @@ void collisions() {
 	// Ball v Paddles
 	if (CheckCollisionCircleRec(ball.ballPosition, ball.ballRadius, players[0].rec)) {
 		ball.ballSpeed.x *= -1.0f;
-	
 		if(players[0].rec.x != GetScreenWidth()/20) players[0].rec.x = GetScreenWidth() / 20;
 		randomPU++;
 	}
@@ -393,15 +392,26 @@ void collisions() {
 		players[0].shield = false;
 	}
 
-	if (CheckCollisionCircleRec(multiball.ballPosition, ball.ballRadius, players[0].rec)) {
+	if (CheckCollisionCircleRec(multiball.ballPosition, multiball.ballRadius, players[0].shields) && players[0].shield) {
 		multiball.ballSpeed.x *= -1.0f;
-		cout << "collide!" << endl;
-		if (players[0].rec.x != GetScreenWidth() / 20) players[0].rec.x = GetScreenWidth() / 20;
+		players[0].shield = false;
+	}
+
+	if (CheckCollisionCircleRec(multiball.ballPosition, multiball.ballRadius, players[0].rec)) {
+		multiball.ballSpeed.x *= -1.0f;
 	}
 
 
+	if (CheckCollisionCircleRec(multiball.ballPosition, multiball.ballRadius, players[1].rec)) {
+		multiball.ballSpeed.x *= -1.0f;
+	}
+
 	if (CheckCollisionCircleRec(ball.ballPosition, ball.ballRadius, players[1].shields)&&players[1].shield) {
 		ball.ballSpeed.x *= -1.0f;
+		players[1].shield = false;
+	}
+	if (CheckCollisionCircleRec(multiball.ballPosition, multiball.ballRadius, players[1].shields) && players[1].shield) {
+		multiball.ballSpeed.x *= -1.0f;
 		players[1].shield = false;
 	}
 	if (CheckCollisionCircleRec(ball.ballPosition, ball.ballRadius, players[1].rec)){
@@ -412,20 +422,15 @@ void collisions() {
 		}
 		randomPU++;
 	}
-	if (CheckCollisionCircleRec(multiball.ballPosition, ball.ballRadius, players[0].rec)) {
-		cout << multiball.ballSpeed.x << endl;
-		multiball.ballSpeed.x *= -1.0f;
-		cout << "collide!" << endl;
-		if (players[1].rec.x != GetScreenWidth() / 20) players[0].rec.x = GetScreenWidth() / 20;
+	
 
-	}
 	//player vs wall Collisions
 	if (players[0].rec.y <= 0)players[0].rec.y = 0;
 	if (players[0].rec.y >= GetScreenHeight() - players[0].paddleSize.y)players[0].rec.y = (GetScreenHeight() - players[0].paddleSize.y);
 	if (players[1].rec.y <= 0)players[1].rec.y = 0;
 	if (players[1].rec.y >= GetScreenHeight() - players[1].paddleSize.y)players[1].rec.y = (GetScreenHeight() - players[1].paddleSize.y);
 
-	}
+}
 void timePU(int id) {
 	float timer = 0.0f;
 	Vector2 ballPosTemp = ball.ballPosition;

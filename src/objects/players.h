@@ -8,7 +8,6 @@ struct Player {
     Vector2 paddleSpeed;
     Vector2 paddleSize;
     bool powerUp;
-	bool adv;
 	bool shield;
 	Rectangle shields;
 };

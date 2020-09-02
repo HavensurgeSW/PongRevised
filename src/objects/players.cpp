@@ -30,10 +30,6 @@ void setPlayerParameters() {
 	players[0].powerUp = false;
 	players[1].powerUp = false;
 
-	players[0].adv = false;
-	players[1].adv = false;
-
-
 	players[0].shield = false;
 	players[0].shields.height = GetScreenHeight();
 	players[0].shields.width = 5;
