@@ -30,6 +30,9 @@ void setPlayerParameters() {
 	players[0].powerUp = false;
 	players[1].powerUp = false;
 
+	players[0].adv = false;
+	players[1].adv = false;
+
 }
 void playerMovement() {
 	if (IsKeyDown(KEY_W))players[0].rec.y -= 7;

@@ -115,7 +115,7 @@ void menuScreen() {
 
 			
 
-		DrawText(FormatText("v 0.9"), GetScreenWidth() - 50, 1, 20, WHITE);
+		DrawText(FormatText("v 1.0"), GetScreenWidth() - 50, 1, 20, WHITE);
 
 
 		if (CheckCollisionPointRec(GetMousePosition(), playButton)) {
@@ -330,6 +330,7 @@ void collisions() {
 		ball.ballStop = true;
 		launchDirec = true;
 		players[0].powerUp = true;
+		players[1].adv = true;
 		//Win Con
 		if (players[0].score == 10) {
 			screenId = screenID::menu;
@@ -343,6 +344,7 @@ void collisions() {
 		ball.ballStop = true;
 		launchDirec = false;
 		players[1].powerUp = true;
+		players[0].adv = true;
 
 		//WinCon
 		if (players[1].score == 10) {
@@ -456,19 +458,28 @@ void input() {
 	//MOVEMENT
 	if (IsKeyDown(KEY_W))players[0].rec.y -= players[0].paddleSpeed.y;
 	if (IsKeyDown(KEY_S))players[0].rec.y += players[0].paddleSpeed.y;
-	if (IsKeyDown(KEY_UP))players[1].rec.y -= players[1].paddleSpeed.y;
-	if (IsKeyDown(KEY_DOWN))players[1].rec.y += players[1].paddleSpeed.y;
 
+	if (gamemode){
+		if (IsKeyDown(KEY_UP))players[1].rec.y -= players[1].paddleSpeed.y;
+		if (IsKeyDown(KEY_DOWN))players[1].rec.y += players[1].paddleSpeed.y;
+		if (IsKeyPressed(KEY_L) && players[1].powerUp) {
+			timePU(1);
+		}
+	}
+	if (!gamemode) {
+		if (ball.ballPosition.y > players[1].rec.y) {
+			players[1].rec.y += players[1].paddleSpeed.y-2;
+		}
+		if (ball.ballPosition.y < players[1].rec.y) {
+			players[1].rec.y -= players[1].paddleSpeed.y-2;
+		}
+	}
 	if (ball.ballStop) {
 		if (IsKeyPressed(KEY_ENTER)) ball.ballStop = false;
 	}
 
 	if (IsKeyPressed(KEY_G)&&players[0].powerUp) {
 		timePU(0);
-		
-	}
-	if (IsKeyPressed(KEY_L) && players[1].powerUp) {
-		timePU(1);
 		
 	}
 
@@ -478,6 +489,15 @@ void update() {
 		ball.ballPosition.y += ball.ballSpeed.y;
 		ball.ballPosition.x += ball.ballSpeed.x;
 	}
+	if (players[0].adv=true){
+		switch (GetRandomValue(1, 3)) {
+		case 1:
+
+		case 2:
+		case 3:
+			break;
+		}
+	}
 }
 
 
@@ -486,7 +506,7 @@ void gameScreen() {
 	initGameObjects();
 	
 	bool pauseBool = false;
-    while (!WindowShouldClose()&&screenId==screenID::game) {					
+    while (!WindowShouldClose()&&screenId==screenID::game&&gamemode) {					
 			
 		if (!pauseBool){
 			input();
@@ -522,6 +542,42 @@ void gameScreen() {
 		}
 
     }
+	while (!WindowShouldClose() && screenId == screenID::game&&!gamemode) {
+
+		if (!pauseBool) {
+			input();
+			if (IsKeyPressed(KEY_P)) {
+				pauseBool = true;
+				fflush(stdin);
+			}
+			update();
+			collisions();
+			drawGame();
+		}
+		else {
+			BeginDrawing();
+			ClearBackground(BLACK);
+			DrawText(FormatText("%i", players[0].score), (GetScreenWidth() / 2) - 60, 20, 40, players[0].color);
+			DrawText(FormatText("%i", players[1].score), (GetScreenWidth() / 2) + 40, 20, 40, players[1].color);
+			DrawRectangleLines(players[0].rec.x, players[0].rec.y, players[0].rec.width, players[0].rec.height, players[0].color);
+			DrawRectangleLines(players[1].rec.x, players[1].rec.y, players[1].rec.width, players[1].rec.height, players[1].color);
+			DrawCircleLines(ball.ballPosition.x, ball.ballPosition.y, ball.ballRadius, WHITE);
+
+			DrawText("PAUSED", GetScreenWidth() / 3.0f + 20, GetScreenHeight() / 3.0f, 60, WHITE);
+			DrawText("RESUME [P]", GetScreenWidth() / 3.0f + 70, GetScreenHeight() / 3.0f + 120, 30, WHITE);
+			DrawText("MENU [M]", GetScreenWidth() / 3.0f + 90, GetScreenHeight() - 60.0f, 30, WHITE);
+
+
+			if (IsKeyPressed(KEY_P)) {
+				pauseBool = false;
+			}
+			if (IsKeyPressed(KEY_M)) {
+				screenId = screenID::menu;
+			}
+			EndDrawing();
+		}
+
+	}
 
 }
 
