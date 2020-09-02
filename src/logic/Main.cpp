@@ -28,6 +28,8 @@ void initGame() {
 }
 void splashScreen(){
 	int framesCounter = 0;
+	players[0].color = RED;
+	players[1].color = BLUE;
 	
 
 	while (screenId==screenID::splash&&!WindowShouldClose())    // Detect window close button or ESC key
@@ -45,11 +47,13 @@ void splashScreen(){
 		}
 		
 	}
+
 	
 }
 void menuScreen() {
 	bool menuBool = true;
 	bool creditsBool = false;
+	
 
 	Rectangle playButton;
 	playButton.x = 20;
@@ -133,21 +137,46 @@ void optionsScreen() {
 	backButton.x = 20;
 	backButton.y = 20;
 	backButton.height = 30;
-	backButton.width = 65;
+	backButton.width = 70;
+	Rectangle PvPButton;
+	PvPButton.x = 20;
+	PvPButton.y = GetScreenHeight()/4+40;
+	PvPButton.height = 30;
+	PvPButton.width = 48.75f;
+	Rectangle PvAIButton;
+	PvAIButton.x = 20;
+	PvAIButton.y = GetScreenHeight()/4+80;
+	PvAIButton.height = 30;
+	PvAIButton.width = 65;
+
 
 
 	while (!WindowShouldClose() && screenId == screenID::options){
 
-		DrawText(FormatText("GAMEMODE"), 20, GetScreenHeight() / 4, 30, WHITE);
-
 		BeginDrawing();
 		ClearBackground(BLACK);
+
 		if (CheckCollisionPointRec(GetMousePosition(), backButton))
 			DrawText(FormatText("Back"), 20, 20, 30, RED);
 		else
 			DrawText(FormatText("Back"), 20, 20, 30, WHITE);
 
+		DrawText(FormatText("|PADDLE COLORS|"), GetScreenWidth()/2, GetScreenHeight() / 4, 30, WHITE);
+		DrawRectangle(GetScreenWidth() / 2+90, PvPButton.y+10, 85, 10, players[0].color);
+		DrawRectangle(GetScreenWidth() / 2+90, PvAIButton.y+10, 85, 10, players[1].color);
 
+		//--------------------
+		DrawText(FormatText("|GAMEMODE|"), 20, GetScreenHeight() / 4, 30, WHITE);
+		if (CheckCollisionPointRec(GetMousePosition(), PvPButton))
+			DrawText(FormatText("PvP"), 20, PvPButton.y, 30, RED);
+		else
+			DrawText(FormatText("PvP"), 20, PvPButton.y, 30, WHITE);
+
+		if (CheckCollisionPointRec(GetMousePosition(), PvAIButton))
+			DrawText(FormatText("PvAI"), 20, PvAIButton.y, 30, RED);
+		else
+			DrawText(FormatText("PvAI"), 20, PvAIButton.y, 30, WHITE);
+		//--------------------
 
 		EndDrawing();
 

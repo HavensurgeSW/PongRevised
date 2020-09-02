@@ -25,9 +25,6 @@ void setPlayerParameters() {
 	players[1].rec.x = (float)GetScreenWidth() - 40;
 	players[1].rec.y = (float)GetScreenHeight() / 2;
 
-	players[0].color = RED;
-	players[1].color = BLUE;
-
 	players[0].score = 0;
 	players[1].score = 0;
 	players[0].powerUp = false;
