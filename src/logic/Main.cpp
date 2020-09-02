@@ -11,7 +11,6 @@ enum class screenID {
     menu,
     game,
 	options,
-
     pause,
 	credits
 };
@@ -19,6 +18,7 @@ screenID screenId;
 
 bool launchDirec;
 bool gamemode = true;
+int randomPU = 0;
 
 
 void initGame() {
@@ -307,6 +307,11 @@ void drawGame() {
         if (launchDirec)
             DrawTriangleLines({ GetScreenWidth() / 2 + 60.0f, GetScreenHeight() / 2.0f }, { GetScreenWidth() / 2 + 30.0f, GetScreenHeight() / 2 + 15.0f }, { GetScreenWidth() / 2 + 30.0f, GetScreenHeight() / 2 - 15.0f }, players[1].color);
     }
+	//MULTIBALL
+	if (multiball.active){
+		DrawCircleV(multiball.ballPosition, multiball.ballRadius, PINK);
+	}
+	//-------------------
 	if (players[0].powerUp){
 		DrawLine(GetScreenWidth() / 2-20, 0, GetScreenWidth() / 2-20, GetScreenHeight(), players[0].color);
 	}
@@ -322,20 +327,45 @@ void drawGame() {
 }
 void collisions() {
 	//Scoring collisions
+	if (multiball.ballPosition.x >= (GetScreenWidth() - ball.ballRadius)){
+		players[0].score++;
+		multiball.ballPosition.x = (GetScreenWidth() / 2);
+		multiball.ballPosition.y = (GetScreenHeight() / 2);
+	}
 	if (ball.ballPosition.x >= (GetScreenWidth() - ball.ballRadius)) {
 		players[0].score++;
 		ball.ballPosition.x = (GetScreenWidth() / 2);
 		ball.ballPosition.y = (GetScreenHeight() / 2);
 
 		ball.ballStop = true;
+		multiball.active = false;
 		launchDirec = true;
 		players[0].powerUp = true;
-		players[1].adv = true;
-		//Win Con
-		if (players[0].score == 10) {
-			screenId = screenID::menu;
-		}
+		randomPU = 0;
+		/*players[1].adv = true;
+
+		if (players[0].adv = true) {
+			switch (GetRandomValue(1, 2)) {
+			case 1:
+				players[1].paddleSpeed.x += 2;
+				players[1].paddleSpeed.y += 2;
+				players[1].adv = false;
+				cout << "Speed increase" << endl;
+			case 2:
+				players[1].paddleSize.y = 110.5f;
+				players[1].adv = false;
+				cout << "Size increase" << endl;
+			}
+		}*/
+		
 	}
+	if (multiball.ballPosition.x <= (0 - multiball.ballRadius)) {
+		players[1].score++;
+		multiball.ballPosition.x = (GetScreenWidth() / 2);
+		multiball.ballPosition.y = (GetScreenHeight() / 2);
+		multiball.active = false;
+	}
+
 	if (ball.ballPosition.x <= (0 - ball.ballRadius)) {
 		players[1].score++;
 		ball.ballPosition.x = (GetScreenWidth() / 2);
@@ -345,23 +375,42 @@ void collisions() {
 		launchDirec = false;
 		players[1].powerUp = true;
 		players[0].adv = true;
+		randomPU = 0;
 
-		//WinCon
-		if (players[1].score == 10) {
-			screenId = screenID::menu;
-		}
+		
 	}
 	// Check walls collision for bouncing
 	if ((ball.ballPosition.y >= (GetScreenHeight() - ball.ballRadius)) || (ball.ballPosition.y <= ball.ballRadius)) ball.ballSpeed.y *= -1.0f;
+	if ((multiball.ballPosition.y >= (GetScreenHeight() - multiball.ballRadius)) || (multiball.ballPosition.y <= multiball.ballRadius)) multiball.ballSpeed.y *= -1.0f;
+
+
+	// Ball v Paddles
 	if (CheckCollisionCircleRec(ball.ballPosition, ball.ballRadius, players[0].rec)) {
 		ball.ballSpeed.x *= -1.0f;
-		if(players[0].rec.x != GetScreenWidth()/20) players[0].rec.x = (float)GetScreenWidth() / 20;
+		if(players[0].rec.x != GetScreenWidth()/20) players[0].rec.x = GetScreenWidth() / 20;
+		randomPU++;
 	}
+
+	if (CheckCollisionCircleRec(multiball.ballPosition, ball.ballRadius, players[0].rec)&&multiball.active) {
+		multiball.ballSpeed.x *= -1.0f;
+		cout << "collide!" << endl;
+		if (players[0].rec.x != GetScreenWidth() / 20) players[0].rec.x = GetScreenWidth() / 20;
+	}
+
+
 	if (CheckCollisionCircleRec(ball.ballPosition, ball.ballRadius, players[1].rec)){
 		ball.ballSpeed.x *= -1.0f;
 		if (players[1].rec.x != GetScreenWidth() - 40) {
 			players[1].rec.x = GetScreenWidth() - 40;
 		}
+		randomPU++;
+	}
+	if (CheckCollisionCircleRec(multiball.ballPosition, ball.ballRadius, players[0].rec)&&multiball.active) {
+		cout << multiball.ballSpeed.x << endl;
+		multiball.ballSpeed.x *= -1.0f;
+		cout << "collide!" << endl;
+		if (players[1].rec.x != GetScreenWidth() / 20) players[0].rec.x = GetScreenWidth() / 20;
+
 	}
 	//player vs wall Collisions
 	if (players[0].rec.y <= 0)players[0].rec.y = 0;
@@ -484,19 +533,30 @@ void input() {
 	}
 
 }
+void hazards(int random) {
+	switch (random){
+	case 1:
+		multiball.active = true;
+		break;
+	}
+}
 void update() {
 	if (!ball.ballStop) {
 		ball.ballPosition.y += ball.ballSpeed.y;
 		ball.ballPosition.x += ball.ballSpeed.x;
 	}
-	if (players[0].adv=true){
-		switch (GetRandomValue(1, 3)) {
-		case 1:
+	if (multiball.active){
+		multiball.ballPosition.y += multiball.ballSpeed.y;
+		multiball.ballPosition.x += multiball.ballSpeed.x;
+	}
 
-		case 2:
-		case 3:
-			break;
-		}
+	if (randomPU>=6){
+		hazards(1);
+		randomPU = 0;
+	}
+
+	if (players[1].score >= 10||players[0].score>=10) {
+		screenId = screenID::menu;
 	}
 }
 
@@ -504,7 +564,6 @@ void update() {
 void gameScreen() {
 
 	initGameObjects();
-	
 	bool pauseBool = false;
     while (!WindowShouldClose()&&screenId==screenID::game&&gamemode) {					
 			
