@@ -26,10 +26,16 @@ void initGame() {
     SetTargetFPS(60);
     screenId = screenID::splash;
 }
+void initGameObjects() {
+	setPlayerParameters();
+	setBallParameters();
+	launchDirec = false;
+}
 void splashScreen(){
 	int framesCounter = 0;
 	players[0].color = RED;
 	players[1].color = BLUE;
+	initGameObjects();
 	
 
 	while (screenId==screenID::splash&&!WindowShouldClose())    // Detect window close button or ESC key
@@ -149,7 +155,19 @@ void optionsScreen() {
 	PvAIButton.height = 30;
 	PvAIButton.width = 65;
 
+	Rectangle invPaddle0;
+	invPaddle0.x = GetScreenWidth() / 2 + 90;
+	invPaddle0.y = PvPButton.y + 10;
+	invPaddle0.height = 10;
+	invPaddle0.width = 85;
+	Rectangle invPaddle1;
+	invPaddle1.x = GetScreenWidth() / 2 + 90;
+	invPaddle1.y = PvAIButton.y + 10;
+	invPaddle1.height = 10;
+	invPaddle1.width = 85;
 
+	int color0 = 0;
+	int color1 = 1;
 
 	while (!WindowShouldClose() && screenId == screenID::options){
 
@@ -164,6 +182,7 @@ void optionsScreen() {
 		DrawText(FormatText("|PADDLE COLORS|"), GetScreenWidth()/2, GetScreenHeight() / 4, 30, WHITE);
 		DrawRectangle(GetScreenWidth() / 2+90, PvPButton.y+10, 85, 10, players[0].color);
 		DrawRectangle(GetScreenWidth() / 2+90, PvAIButton.y+10, 85, 10, players[1].color);
+		
 
 		//--------------------
 		DrawText(FormatText("|GAMEMODE|"), 20, GetScreenHeight() / 4, 30, WHITE);
@@ -183,14 +202,63 @@ void optionsScreen() {
 		if (CheckCollisionPointRec(GetMousePosition(), backButton) && IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
 			screenId = screenID::menu;
 		}
+
+		if (CheckCollisionPointRec(GetMousePosition(),invPaddle0)&&IsMouseButtonReleased(MOUSE_LEFT_BUTTON)){
+			color0++;
+			if (color0 > 5)
+				color0 = 0;
+
+			switch (color0) {
+			case 0:
+				players[0].color = RED;
+				break;
+			case 1:
+				players[0].color = BLUE;
+				break;
+			case 2:
+				players[0].color = YELLOW;
+				break;
+			case 3:
+				players[0].color = GREEN;
+				break;
+			case 4:
+				players[0].color = VIOLET;
+				break;
+			case 5:
+				players[0].color = BROWN;
+				break;
+			}
+		}
+
+		if (CheckCollisionPointRec(GetMousePosition(), invPaddle1) && IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
+			color1++;
+			if (color1 > 5)
+				color1 = 0;
+
+			switch (color1) {
+			case 0:
+				players[1].color = RED;
+				break;
+			case 1:
+				players[1].color = BLUE;
+				break;
+			case 2:
+				players[1].color = YELLOW;
+				break;
+			case 3:
+				players[1].color = GREEN;
+				break;
+			case 4:
+				players[1].color = VIOLET;
+				break;
+			case 5:
+				players[1].color = BROWN;
+				break;
+			}
+		}
 	}
 }
 /////GAME LOOP//////
-void initGameObjects() {
-    setPlayerParameters(); 
-    setBallParameters(); 
-	launchDirec = false;
-}
 void drawGame() {
     BeginDrawing();
 
@@ -383,7 +451,7 @@ void update() {
 
 
 void gameScreen() {
-	initGameObjects();
+
 	
 	bool pauseBool = false;
     while (!WindowShouldClose()&&screenId==screenID::game) {					
