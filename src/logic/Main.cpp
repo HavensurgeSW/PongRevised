@@ -181,8 +181,16 @@ void collisions() {
 	}
 	// Check walls collision for bouncing
 	if ((ball.ballPosition.y >= (GetScreenHeight() - ball.ballRadius)) || (ball.ballPosition.y <= ball.ballRadius)) ball.ballSpeed.y *= -1.0f;
-	if (CheckCollisionCircleRec(ball.ballPosition, ball.ballRadius, players[0].rec)) ball.ballSpeed.x *= -1.0f;
-	if (CheckCollisionCircleRec(ball.ballPosition, ball.ballRadius, players[1].rec)) ball.ballSpeed.x *= -1.0f;
+	if (CheckCollisionCircleRec(ball.ballPosition, ball.ballRadius, players[0].rec)) {
+		ball.ballSpeed.x *= -1.0f;
+		if(players[0].rec.x != GetScreenWidth()/20) players[0].rec.x = (float)GetScreenWidth() / 20;
+	}
+	if (CheckCollisionCircleRec(ball.ballPosition, ball.ballRadius, players[1].rec)){
+		ball.ballSpeed.x *= -1.0f;
+		if (players[1].rec.x != GetScreenWidth() - 40) {
+			players[1].rec.x = GetScreenWidth() - 40;
+		}
+	}
 	//player vs wall Collisions
 	if (players[0].rec.y <= 0)players[0].rec.y = 0;
 	if (players[0].rec.y >= GetScreenHeight() - players[0].paddleSize.y)players[0].rec.y = (GetScreenHeight() - players[0].paddleSize.y);
@@ -327,7 +335,6 @@ void gameScreen() {
 			DrawRectangleLines(players[0].rec.x, players[0].rec.y, players[0].rec.width, players[0].rec.height, players[0].color);
 			DrawRectangleLines(players[1].rec.x, players[1].rec.y, players[1].rec.width, players[1].rec.height, players[1].color);
 			DrawCircleLines(ball.ballPosition.x, ball.ballPosition.y, ball.ballRadius, WHITE);
-			DrawLine(GetScreenWidth() / 2, 0, GetScreenWidth() / 2, GetScreenHeight(), LIGHTGRAY);
 
 			DrawText("PAUSED", GetScreenWidth()/3.0f+20, GetScreenHeight()/3.0f, 60, WHITE);
 			DrawText("RESUME [P]", GetScreenWidth() / 3.0f + 70, GetScreenHeight() / 3.0f+120, 30, WHITE);
