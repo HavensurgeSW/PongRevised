@@ -24,6 +24,9 @@
     <ClCompile Include="..\src\objects\players.cpp">
       <Filter>src\objects</Filter>
     </ClCompile>
+    <ClCompile Include="Mainframe.cpp">
+      <Filter>src\logic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\logic\Collisions.h">
@@ -34,6 +37,9 @@
     </ClInclude>
     <ClInclude Include="..\src\objects\players.h">
       <Filter>src\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Mainframe.h">
+      <Filter>src\logic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

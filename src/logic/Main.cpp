@@ -1,9 +1,10 @@
 #pragma once
 
 #include "raylib.h"
-#include "../objects/players.h"
-#include "../objects/Ball.h"
+#include "players.h"
+#include "objects/Ball.h"
 #include <iostream>
+#include "Mainframe.h"
 using namespace std;
 
 enum class screenID {
@@ -12,7 +13,6 @@ enum class screenID {
     game,
 	options,
     pause,
-	credits
 };
 screenID screenId;
 
@@ -32,7 +32,6 @@ void initGame() {
     screenId = screenID::splash;
 }
 void initGameObjects() {
-	setPlayerParameters();
 	setBallParameters();
 	launchDirec = false;
 }
@@ -133,7 +132,7 @@ void menuScreen() {
 
 			DrawText(FormatText("Player 1"), (GetScreenWidth() / 2 + 40), (GetScreenHeight() / 4) + 100, 20, players[0].color);
 			DrawText(FormatText("[W/S] [G]"), (GetScreenWidth() / 2 + 130), (GetScreenHeight() / 4) + 100, 20, players[0].color);
-			DrawText(FormatText("Player 1"), (GetScreenWidth() / 2 + 40), (GetScreenHeight() / 4) + 140, 20, players[1].color);
+			DrawText(FormatText("Player 2"), (GetScreenWidth() / 2 + 40), (GetScreenHeight() / 4) + 140, 20, players[1].color);
 			DrawText(FormatText("[UP/DOWN] [L]"), (GetScreenWidth() / 2 + 130), (GetScreenHeight() / 4) + 140, 20, players[1].color);
 
 			DrawText(FormatText("[P]ause"), (GetScreenWidth() / 2 + 40), (GetScreenHeight() / 4) + 180, 20, WHITE);
@@ -319,7 +318,8 @@ void drawGame() {
 	}
 	//MULTIBALL
 	if (multiball.active){
-		DrawCircleV(multiball.ballPosition, multiball.ballRadius, PINK);
+		DrawCircleV(multiball.ballPosition, multiball.ballRadius, WHITE);
+		DrawCircleLines(multiball.ballPosition.x, multiball.ballPosition.y, multiball.ballRadius, GOLD);
 	}
 	//-------------------
 	if (players[0].powerUp){
@@ -341,6 +341,7 @@ void collisions() {
 		players[0].score++;
 		multiball.ballPosition.x = (GetScreenWidth() / 2);
 		multiball.ballPosition.y = (GetScreenHeight() / 2);
+		multiball.active = false;
 	}
 	if (ball.ballPosition.x >= (GetScreenWidth() - ball.ballRadius)) {
 		players[0].score++;
@@ -599,6 +600,9 @@ void gameScreen() {
 			DrawRectangleLines(players[0].rec.x, players[0].rec.y, players[0].rec.width, players[0].rec.height, players[0].color);
 			DrawRectangleLines(players[1].rec.x, players[1].rec.y, players[1].rec.width, players[1].rec.height, players[1].color);
 			DrawCircleLines(ball.ballPosition.x, ball.ballPosition.y, ball.ballRadius, WHITE);
+			if (multiball.active) {
+				DrawCircleLines(multiball.ballPosition.x, multiball.ballPosition.y, multiball.ballRadius, GOLD);
+			}
 
 			DrawText("PAUSED", GetScreenWidth()/3.0f+20, GetScreenHeight()/3.0f, 60, WHITE);
 			DrawText("RESUME [P]", GetScreenWidth() / 3.0f + 70, GetScreenHeight() / 3.0f+120, 30, WHITE);
@@ -657,21 +661,10 @@ void gameScreen() {
 
 void main() {
     
-    initGame();
+Mainframe* pongRevised = new Mainframe;
+	pongRevised->init();
 	
-	while (!WindowShouldClose()){
-		switch (screenId) {
-		case screenID::splash:
-			splashScreen();
-		case screenID::menu:
-			menuScreen();
-		case screenID::game:
-			gameScreen();
-		case screenID::options:
-			optionsScreen();
-		}
-	}
 	
 
-    CloseWindow();        
+	delete pongRevised;
   }

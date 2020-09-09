@@ -1,8 +1,10 @@
 #pragma once
 #include "raylib.h"
-struct Player {
+#include <iostream>
+
+class Player {
+private:
     Rectangle rec;
-    int playerId;
     Color color;
     int score;
     Vector2 paddleSpeed;
@@ -10,10 +12,21 @@ struct Player {
     bool powerUp;
 	bool shield;
 	Rectangle shields;
+public:
+	void setPlayer();
+	void playerMovement();
 };
 
-extern Player players[1];
+//struct Player {
+//
+//	Rectangle rec;
+//	int playerId;
+//	Color color;
+//	int score;
+//	Vector2 paddleSpeed;
+//	Vector2 paddleSize;
+//	bool powerUp;
+//	bool shield;
+//	Rectangle shields;
+//};
 
-
-void setPlayerParameters();
-void playerMovement();
