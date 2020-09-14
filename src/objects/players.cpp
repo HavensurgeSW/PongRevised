@@ -3,14 +3,14 @@
 
 using namespace std;
 
-void Player::setPlayer(){
+Player::Player(){
 	paddleSpeed.y = 7;
 	paddleSpeed.x = 3;
 	paddleSize = { 10.0f, 85.0f };
 	rec.width = paddleSize.x;
 	rec.height = paddleSize.y;
-	rec.x = (float)GetScreenWidth() / 20;
-	rec.y = (float)GetScreenHeight() / 2;
+	rec.x = GetScreenWidth() / 20.0f;
+	rec.y = GetScreenHeight() / 2.0f;
 	score = 0;
 	powerUp = false;
 	shield = false;
@@ -18,11 +18,58 @@ void Player::setPlayer(){
 	shields.width = 5;
 	shields.x = 0;
 	shields.y = 0;
+	color = RED;
 }
-void Player::playerMovement() {
-	if (IsKeyDown(KEY_W))rec.y -= 7;
-	if (IsKeyDown(KEY_S))rec.y += 7;
+Player::~Player() {
+	
 }
+Rectangle Player::getRec() {
+	return rec;
+}
+void Player::setRecY(int y) {
+	rec.y = y;
+}
+void Player::setRecX(int x) {
+	rec.x = x;
+}
+void Player::setColor(Color c) {
+	color = c;
+}
+Color Player::getColor() {
+	return color;
+}
+void Player::setSpeed(int x, int y) {
+	paddleSpeed.x = x;
+	paddleSpeed.x = y;
+}
+Vector2 Player::getSpeed() {
+	return paddleSpeed;
+}
+void Player::setScore(int i) {
+	score += i;
+}
+int Player::getScore() {
+	return score;
+}
+
+bool Player::getPU() {
+	return powerUp;
+}
+void Player::setPU(bool p) {
+	powerUp = p;
+}
+
+bool Player::getShield() {
+	return shield;
+}
+void Player::setShield(bool s) {
+	shield = s;
+}
+
+Rectangle Player::getShields() {
+	return shields;
+}
+
 
 //void setPlayerParameters() {
 //

@@ -12,9 +12,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\logic\Collisions.cpp">
-      <Filter>src\logic</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\logic\Main.cpp">
       <Filter>src\logic</Filter>
     </ClCompile>
@@ -24,21 +21,18 @@
     <ClCompile Include="..\src\objects\players.cpp">
       <Filter>src\objects</Filter>
     </ClCompile>
-    <ClCompile Include="Mainframe.cpp">
+    <ClCompile Include="..\src\Mainframe.cpp">
       <Filter>src\logic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\logic\Collisions.h">
-      <Filter>src\logic</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\objects\Ball.h">
       <Filter>src\objects</Filter>
     </ClInclude>
     <ClInclude Include="..\src\objects\players.h">
       <Filter>src\objects</Filter>
     </ClInclude>
-    <ClInclude Include="Mainframe.h">
+    <ClInclude Include="..\src\Mainframe.h">
       <Filter>src\logic</Filter>
     </ClInclude>
   </ItemGroup>

@@ -19,17 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\logic\Collisions.cpp" />
     <ClCompile Include="..\src\logic\Main.cpp" />
+    <ClCompile Include="..\src\Mainframe.cpp" />
     <ClCompile Include="..\src\objects\Ball.cpp" />
     <ClCompile Include="..\src\objects\players.cpp" />
-    <ClCompile Include="Mainframe.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\logic\Collisions.h" />
+    <ClInclude Include="..\src\Mainframe.h" />
     <ClInclude Include="..\src\objects\Ball.h" />
     <ClInclude Include="..\src\objects\players.h" />
-    <ClInclude Include="Mainframe.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

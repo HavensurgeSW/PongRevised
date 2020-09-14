@@ -13,20 +13,24 @@ private:
 	bool shield;
 	Rectangle shields;
 public:
-	void setPlayer();
-	void playerMovement();
-};
+	Player();
+	~Player();
+	Rectangle getRec();
+	void setRecY(int y);
+	void setRecX(int x);
+	void setColor(Color c);
+	Color getColor();
+	void setScore(int i);
+	int getScore();
+	void setSpeed(int x, int y);
+	Vector2 getSpeed();
 
-//struct Player {
-//
-//	Rectangle rec;
-//	int playerId;
-//	Color color;
-//	int score;
-//	Vector2 paddleSpeed;
-//	Vector2 paddleSize;
-//	bool powerUp;
-//	bool shield;
-//	Rectangle shields;
-//};
+	bool getPU();
+	void setPU(bool p);
+
+	bool getShield();
+	void setShield(bool s);
+
+	Rectangle getShields();
+};
 
